@@ -18,5 +18,5 @@ More involved setup:
   * Make win32 build of your game
   * Copy win32 exe into working folder and rename it to <gamename>.x86
   * Copy 2 dlls into working folder "Data\Mono\..." and rename them like before, but with "-x86" prefix
-  * Download or build with VS2015 Launcher32.exe or Launcher64.exe
+  * Download Launcher32.exe or Launcher64.exe or build them with VS2015 (menu Build/Batch build, edit source before if needed)
   * Put launcher exe files into game folder, rename if you want to
