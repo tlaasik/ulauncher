@@ -7,7 +7,7 @@ Features:
 Simple setup:
   * Build 64 bit windows version of your game
   * Rename game data folder to "Data" and delete exe file
-  * Download and unpack Launcher.zip matching your unity version into your project folder, overwrite files
+  * Download and unpack "Launcher for Unity x.x.x.x.zip" matching your unity version into your project folder, overwrite files
 
 If you don't trust my code blindly (why should you) you should build the launcher yourself with VS2015 and integrate it with your project. It appears that 64 and 32 bit builds can use same data folder, but there two mono related dll files that can't. The launcher ensures that those two dll-s are what they need to be, then finds either .x64 or .x86 file and executes it. Then it waits until game terminates and if there is "Crash!!!" in log then it shows a message about it.
 
