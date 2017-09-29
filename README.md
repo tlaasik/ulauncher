@@ -17,4 +17,7 @@ Setup:
   * Download launcher32.exe and launcher64.exe or build them with VS2015 (good for changing icon if not more)
   * Put launcher exe files into game folder, rename if you want to
 
+[Download precompiled launcher exe files here](http://shuugames.com/download/ulauncher_0_1.zip)
+
+
 This should run on both 32 and 64 bit versions of Windows 7, 8 and 10. It's verified to work on 64bit win10 and 64bit win8.1.
