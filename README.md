@@ -19,5 +19,6 @@ Setup:
 
 [Download precompiled launcher exe files here](http://shuugames.com/download/ulauncher_0_1.zip)
 
+If you don't want to deal with Visual Studio C++ part, but just want to change icon and error message texts in launcher then use lightweight resource modification tools. For example this one [Resource Hacker](http://www.angusj.com/resourcehacker)
 
 This should run on both 32 and 64 bit versions of Windows 7, 8 and 10. It's verified to work on 64bit win10 and 64bit win8.1.
