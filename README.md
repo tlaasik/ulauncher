@@ -6,6 +6,8 @@ Features:
 
 It appears that Unity 64 and 32 bit builds can use the same data folder, but there are two mono related DLLs that can't be the same. The launcher ensures that those two dll-s are what they need to be, then finds either .x64 or .x86 file and executes it. Then it waits until game terminates and if there is "Crash!!!" in log then it shows a message about it.
 
+[How the game directory looks like](ulauncher_forum_pic.png)
+
 Setup:
   * Make win64 build of your game, this will be your working folder
   * Rename data folder to "Data" and exe to <dontcare>.x64
