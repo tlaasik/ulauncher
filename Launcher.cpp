@@ -95,12 +95,16 @@ bool CheckIfCrashed()
 	return found;
 }
 
-void DisplayError(LPCWSTR msg)
+void DisplayError(int msgId)
 {
+	wchar_t titleBuf[256];
+	wchar_t msgBuf[256];
+	LoadString(GetModuleHandle(NULL), IDS_APP_TITLE, (LPWSTR)&titleBuf, 254);
+	LoadString(GetModuleHandle(NULL), msgId, (LPWSTR)&msgBuf, 254);
 	MessageBox(
 		NULL,
-		msg,
-		L"Launcher",
+		msgBuf,
+		titleBuf,
 		MB_TOPMOST | MB_ICONERROR | MB_OK
 	);
 }
@@ -116,13 +120,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 #ifdef UNITY_WIN64_BUILD
 	if ((hFind = FindFirstFile(L"*.x64", &ffd)) == INVALID_HANDLE_VALUE)
 	{
-		DisplayError(L"Can't find .x64 executable");
+		DisplayError(IDS_CANT_FIND_X64);
 		return 1;
 	}
 #else
 	if ((hFind = FindFirstFile(L"*.x86", &ffd)) == INVALID_HANDLE_VALUE)
 	{
-		DisplayError(L"Can't find .x86 executable");
+		DisplayError(IDS_CANT_FIND_X86);
 		return 1;
 	}
 #endif
@@ -157,7 +161,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 #endif
 	FindClose(hFind);
 	if (!copyOk) {
-		DisplayError(L"File copy failed");
+		DisplayError(IDS_COPY_FAIL);
 		return 2;
 	}
 
@@ -167,9 +171,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	{
 		DisplayError(
 #ifdef UNITY_WIN64_BUILD
-			L"Can't run \".x64\" executable"
+			IDS_CANT_RUN_X64
 #else
-			L"Can't run \".x86\" executable"
+			IDS_CANT_RUN_X86
 #endif
 		);
 		return 3;
@@ -183,7 +187,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	CloseHandle(pi.hThread);
 
 	if(CheckIfCrashed()) {
-		DisplayError(L"Game crashed. Please find and send Data/output_log.txt to developers");
+		DisplayError(IDS_CRASH);
 		return 4;
 	}
 
