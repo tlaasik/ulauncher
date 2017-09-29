@@ -1,12 +1,38 @@
+/*
+MIT License
 
+Copyright (c) 2017 Toomas Laasik
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 #include "stdafx.h"
 #include "Launcher.h"
 #include <fstream>
 #include <string>
 #include <Windows.h>
 
+/**
+ * If this is defined then launcher is compiled for 64bit unity build, otherwise it's for 32bit build.
+ * Release64 configuration has this defined, Release and Debug configuration does not.
+ * Please note that win64 launcher is still 32 bit.
+ */
 //#define UNITY_WIN64_BUILD
-//#define UNITY_5
 
 // returns file size or -1 on error (call GetLastError for details). It can be up to 31 bits
 int FileSize(LPCTSTR name)
@@ -51,6 +77,7 @@ bool StartProcess(PROCESS_INFORMATION *pi, LPWSTR processName)
 	) ? true : false;
 }
 
+// returns true if there is output_log and it contains "Crash!!!"
 bool CheckIfCrashed()
 {
 	std::ifstream infile("Data\\output_log.txt");
@@ -103,27 +130,34 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// 2. copy files
 	bool copyOk = true;
 #ifdef UNITY_WIN64_BUILD
-#ifdef UNITY_5
-	copyOk &= CopyIfNeeded(L"Data\\Mono\\mono-x64.dll", L"Data\\Mono\\mono.dll");
-	copyOk &= CopyIfNeeded(L"Data\\Mono\\MonoPosixHelper-x64.dll", L"Data\\Mono\\MonoPosixHelper.dll");
-#else
-	copyOk &= CopyIfNeeded(L"Data\\MonoBleedingEdge\\EmbedRuntime\\mono-2.0-bdwgc-x64.dll", L"Data\\MonoBleedingEdge\\EmbedRuntime\\mono-2.0-bdwgc.dll");
-	copyOk &= CopyIfNeeded(L"Data\\MonoBleedingEdge\\EmbedRuntime\\MonoPosixHelper-x64.dll", L"Data\\MonoBleedingEdge\\EmbedRuntime\\MonoPosixHelper.dll");
-#endif
+	// if it is Mono 2.0 or subset of it
+	if (FileSize(L"Data\\Mono\\mono-x64.dll") > 0) {
+		copyOk &= CopyIfNeeded(L"Data\\Mono\\mono-x64.dll", L"Data\\Mono\\mono.dll");
+		copyOk &= CopyIfNeeded(L"Data\\Mono\\MonoPosixHelper-x64.dll", L"Data\\Mono\\MonoPosixHelper.dll");
+		// XXX add more files here if needed for 64bit mono20 build
+	}
+	// otherwise expect Mono 4.6
+	else {
+		copyOk &= CopyIfNeeded(L"Data\\MonoBleedingEdge\\EmbedRuntime\\mono-2.0-bdwgc-x64.dll", L"Data\\MonoBleedingEdge\\EmbedRuntime\\mono-2.0-bdwgc.dll");
+		copyOk &= CopyIfNeeded(L"Data\\MonoBleedingEdge\\EmbedRuntime\\MonoPosixHelper-x64.dll", L"Data\\MonoBleedingEdge\\EmbedRuntime\\MonoPosixHelper.dll");
+		// XXX add more files here if needed for 64bit mono46 build
+	}
 	hFind = FindFirstFile(L"*.x64", &ffd);
 #else
-#ifdef UNITY_5
-	copyOk &= CopyIfNeeded(L"Data\\Mono\\mono-x86.dll", (LPCWSTR)L"Data\\Mono\\mono.dll");
-	copyOk &= CopyIfNeeded(L"Data\\Mono\\MonoPosixHelper-x86.dll", (LPCWSTR)L"Data\\Mono\\MonoPosixHelper.dll");
-#else
-	copyOk &= CopyIfNeeded(L"Data\\MonoBleedingEdge\\EmbedRuntime\\mono-2.0-bdwgc-x86.dll", L"Data\\MonoBleedingEdge\\EmbedRuntime\\mono-2.0-bdwgc.dll");
-	copyOk &= CopyIfNeeded(L"Data\\MonoBleedingEdge\\EmbedRuntime\\MonoPosixHelper-x86.dll", L"Data\\MonoBleedingEdge\\EmbedRuntime\\MonoPosixHelper.dll");
-#endif
+	if (FileSize(L"Data\\Mono\\mono-x86.dll") > 0) {
+		copyOk &= CopyIfNeeded(L"Data\\Mono\\mono-x86.dll", (LPCWSTR)L"Data\\Mono\\mono.dll");
+		copyOk &= CopyIfNeeded(L"Data\\Mono\\MonoPosixHelper-x86.dll", (LPCWSTR)L"Data\\Mono\\MonoPosixHelper.dll");
+		// XXX add more files here if needed for 32bit mono20 build
+	} else {
+		copyOk &= CopyIfNeeded(L"Data\\MonoBleedingEdge\\EmbedRuntime\\mono-2.0-bdwgc-x86.dll", L"Data\\MonoBleedingEdge\\EmbedRuntime\\mono-2.0-bdwgc.dll");
+		copyOk &= CopyIfNeeded(L"Data\\MonoBleedingEdge\\EmbedRuntime\\MonoPosixHelper-x86.dll", L"Data\\MonoBleedingEdge\\EmbedRuntime\\MonoPosixHelper.dll");
+		// XXX add more files here if needed for 32bit mono46 build
+	}
 	hFind = FindFirstFile(L"*.x86", &ffd);
 #endif
 	FindClose(hFind);
 	if (!copyOk) {
-		DisplayError(L"File copy fail");
+		DisplayError(L"File copy failed");
 		return 2;
 	}
 
