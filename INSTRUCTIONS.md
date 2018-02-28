@@ -1,7 +1,5 @@
 # Instructions for making 32/64bit dual Windows build for Unity 2017.1 and up
 
-This is applicable since Unity 2017.1 which creates UnityPlayer.dll. For previous Unity versions use [these instructions instead](INSTRUCTIONS_BEFORE_2017_1.md).
-
   * Make win64 build of your game, this will be your working folder
   * Rename data folder to "Data"
   * Rename UnityEngine.dll to UnityEngine.d64
@@ -21,3 +19,5 @@ This is applicable since Unity 2017.1 which creates UnityPlayer.dll. For previou
 Final working folder should have 2 exe files, UnityEngine.d86, UnityEngine.d64 and Data/. One exe runs 32bit version, another 64bit version.
 
 ![After Unity 2017.1](ulauncher_forum_pic2.png)
+
+This is applicable since Unity 2017.1 which creates UnityPlayer.dll. For previous Unity versions use [these instructions instead](INSTRUCTIONS_BEFORE_2017_1.md).
