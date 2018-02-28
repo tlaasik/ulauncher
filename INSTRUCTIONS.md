@@ -1,6 +1,6 @@
-# How to make 32/64bit dual Windows build
+# Instructions for making 32/64bit dual Windows build for Unity 2017.1 and up
 
-Follow these instructions to create a game build for Windows that contains both 32 and 64 bit version in the same game folder. This is applicable since Unity 2017.1 which creates UnityPlayer.dll. For previous Unity versions use these instructions instead.
+This is applicable since Unity 2017.1 which creates UnityPlayer.dll. For previous Unity versions use [these instructions instead](INSTRUCTIONS_BEFORE_2017_1.md).
 
   * Make win64 build of your game, this will be your working folder
   * Rename data folder to "Data"
